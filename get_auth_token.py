@@ -393,7 +393,7 @@ def insert_data_in_table(data, table_name):
                 VALUES 
                 ('{item['id']}', '{item['album']['id']}', '{item['name']}', {item['disc_number']}, {item['track_number']}, {item['duration_ms']}, {item['explicit']}, {item['popularity']}, {item['is_playable']}, {item['is_local']}, '{item['href']}', '{item['uri']}', '{item['external_ids']['isrc']}');
                 """
-                print('test pr')
+
                 cursor.execute(insert_data_command)
                 connection.commit()
             return
