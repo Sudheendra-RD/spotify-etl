@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, jsonify, make_response
+from flask import Flask, request, redirect, jsonify, make_response, render_template
 import requests
 import os
 import base64
@@ -8,6 +8,7 @@ import json
 import logging
 import mysql.connector
 from mysql.connector import Error
+from get_artist_data import GetArtistData
 
 
 app = Flask(__name__)
@@ -24,6 +25,8 @@ USER_PROFILE_URL = 'https://api.spotify.com/v1/me'
 GET_ARTIST_DATA = 'https://api.spotify.com/v1/artists'
 
 STATE_KEY = 'spotify_auth_state'
+
+getArtistData = GetArtistData()
 
 # Utility function to generate a random string for state
 def generate_random_string(length):
@@ -86,11 +89,12 @@ def callback():
 
     user_data = user_response.json()
     # Redirect back with tokens and user data
-    return jsonify({
-        'access_token': access_token,
-        'refresh_token': refresh_token,
-        'user': user_data
-    })
+    # return jsonify({
+    #     'access_token': access_token,
+    #     'refresh_token': refresh_token,
+    #     'user': user_data
+    # })
+    return render_template('index.html')
 
 @app.route('/refresh_token')
 def refresh_token():
@@ -122,22 +126,25 @@ def refresh_token():
 
 get_spotify_token = os.getenv('SPOTIFY_ACCESS_TOKEN')
 
-@app.route('/play')
+@app.route('/submit', methods=['POST'])
 def get_user_playlist():
-    with open("access_token.txt", "r") as file:
-        token = file.read().strip()
-    artist_id = '7uIbLdzzSEqnX0Pkrb56cR'
-    url = f"{GET_ARTIST_DATA}/{artist_id}/top-tracks"
-    artist_tract = requests.get(
-        url,
-        headers={'Authorization': f'Bearer {token}'}
-    )
-    saved_json = artist_tract.json()
-    for name in table_name:
-        create_table(name, saved_json)
+    user_input = request.form.get('user_input')
+    return getArtistData.get_artist_data(user_input)
+    
+    # with open("access_token.txt", "r") as file:
+    #     token = file.read().strip()
+    # artist_id = '7uIbLdzzSEqnX0Pkrb56cR'
+    # url = f"{GET_ARTIST_DATA}/{artist_id}/top-tracks"
+    # artist_tract = requests.get(
+    #     url,
+    #     headers={'Authorization': f'Bearer {token}'}
+    # )
+    # saved_json = artist_tract.json()
+    # for name in table_name:
+    #     create_table(name, saved_json)
 
-    # push_data_to_mysql(saved_json)
-    return saved_json
+    # # push_data_to_mysql(saved_json)
+    # return saved_json
 
 db_config_with_db = {
         'host': 'localhost',
@@ -146,24 +153,6 @@ db_config_with_db = {
         'database': 'spotify_db'  # Specify the newly created database
     }
 
-
-# def create_table(table_name):
-#     session.execute("""
-#     CREATE TABLE IF NOT EXISTS spark_streams.created_users (
-#         id UUID PRIMARY KEY,
-#         first_name TEXT,
-#         last_name TEXT,
-#         gender TEXT,
-#         address TEXT,
-#         post_code TEXT,
-#         email TEXT,
-#         username TEXT,
-#         registered_date TEXT,
-#         phone TEXT,
-#         picture TEXT);
-#     """)
-
-#     print("Table created successfully!")
 table_name = ['albums', 'artists', 'tracks', 'album_artists', 'track_artists', 'album_markets', 'markets', 'track_markets']
 
 def create_table(table_name, saved_json):
