@@ -139,7 +139,7 @@ def get_user_playlist():
         artist_track = asyncio.run(getArtistData.get_artist_tracks(artist_id))
         for item in table_name:
             getArtistData.create_table(item, artist_track)
-        return artist_track
+        return jsonify(f"Data Inserted successfully. Please check the MySQL workbenck")
     except Exception as e:
         return jsonify(f"Failed to fetch artist tracks with an error: {e}")
 
