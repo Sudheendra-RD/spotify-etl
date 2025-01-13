@@ -12,8 +12,8 @@ class GetArtistData:
             self.db_config_with_db = {
                 'host': 'localhost',
                 'user': 'root',
-                'password': 'sud@SQL_24',
-                'database': 'spotify_db'  # Specify the newly created database
+                'password': '---------',
+                'database': '----------'  # Specify the newly created database
             }
 
     def get_artist_data(self, artist_name):
