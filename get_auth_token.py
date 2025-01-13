@@ -14,9 +14,9 @@ from get_artist_data import GetArtistData
 app = Flask(__name__)
 
 # Spotify credentials
-CLIENT_ID = 'e37f54312f9144859f28795ab3696469'  # Replace with your client ID
-CLIENT_SECRET = '5fdfc2b2daf443e486ec8ec7a765b2ea'  # Replace with your client secret
-REDIRECT_URI = 'http://localhost:8889/callback'  # Replace with your redirect URI
+CLIENT_ID = 'your_client_id'  # Replace with your client ID
+CLIENT_SECRET = 'your_client_secret'  # Replace with your client secret
+REDIRECT_URI = '-------------------'  # Replace with your redirect URI
 
 # Spotify API endpoints
 AUTH_URL = 'https://accounts.spotify.com/authorize'
